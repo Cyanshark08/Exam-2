@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+C:\Users\lando\Exam2\.metadata\.plugins\org.eclipse.jdt.core
+1865797976.index
+2777142040.index
+2482728213.index

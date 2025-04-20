@@ -1,0 +1,76 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.io.*;
+
+public class Exam2 
+{
+
+	public static void main(String[] args) 
+	{
+		
+		ArrayList<Float> thing = new ArrayList<Float>();
+
+	}
+
+	public static void printSpheres(ArrayList<Float> p_Radii)
+	{
+		for(float radius : p_Radii)
+			System.out.printf("Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", radius);
+	}
+	
+	public static void printHemisphere(ArrayList<Float> p_Radii)
+	{
+		for(float radius : p_Radii)
+			System.out.printf("Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", radius);
+	}
+
+	public static void printTetrahedron(ArrayList<Float> p_EdgeLength)
+	{
+		for(float edge : p_EdgeLength)
+			System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", edge);
+	}
+	
+	//cube
+	public static void printHexahedrons(ArrayList<Float> p_EdgeLength)
+	{
+		for(float edge : p_EdgeLength)
+			System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", edge);
+	}
+	
+	public static void printOctahedrons(ArrayList<Float> p_EdgeLength)
+	{
+		for(float edge : p_EdgeLength)
+			System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", edge);
+	}
+	
+	public static void printDodecahedrons(ArrayList<Float> p_EdgeLength)
+	{
+		for(float edge : p_EdgeLength)
+			System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", edge);
+	}
+	
+	public static void printIcosahedrons(ArrayList<Float> p_EdgeLength)
+	{
+		for(float edge : p_EdgeLength)
+			System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", edge);
+	}
+	
+	public static void printCones(ArrayList<float[]> p_Cones)
+	{
+		for(float[] cone : p_Cones)
+			System.out.printf("\n\tBase Radius: %.2f \tHeight: %.2f \tSurface Area: %.2f \tVolume: %.2f", cone[0], cone[1]);
+	}
+	
+	public static void printToruses(ArrayList<float[]> p_Toruses)
+	{
+		for(float[] torus : p_Toruses)
+			System.out.printf("\n\tMajor Radius: %.2f \tMinor Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", torus[0], torus[1]);
+	}
+	
+	public static void printCylinder(ArrayList<float[]> p_Cylinders)
+	{
+		for(float[] cylinder : p_Cylinders)
+			System.out.printf("\n\tBase Radius: %.2f \tHeight: %.2f \tSurface Area: %.2f \tVolume: %.2f", cylinder[0], cylinder[1]);
+	}
+	
+}
