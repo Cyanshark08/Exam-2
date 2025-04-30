@@ -2,33 +2,262 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
 
-public class Exam2 
-{
+public class Exam2 {
+	
+	static ArrayList<ArrayList<float[]>> s_ShapeLists = null;
 
-	public static void main(String[] args) 
+	public static void main(String[] args) throws IOException 
 	{
 		
-		ArrayList<Float> thing = new ArrayList<Float>();
-
+		boolean exit = false;
+		
+		do 
+		{
+			printMenu();
+			
+			char choice = toUpperFirstChar(Input.getString(""));
+			
+			exit = menuIO(choice);
+			
+		} while(!exit);
+		
 	}
-	
-	
+
 //************************************************************************************************************
 //Utility Methods
 	
-	public static void printShapes(ArrayList<ArrayList<float[]>> p_ShapeLists)
+	public static boolean menuIO(char p_Choice) throws IOException
 	{
-		for(byte i = 0; i < 10; i++)
+		
+		clearScreen();
+		
+		switch(p_Choice)
 		{
-			for(float[] shape : p_ShapeLists.get(i))
-				printShape(shape, i);
+		case 'A':
+			initializeFromFile();
+			break;
+		case 'B':
+			if(s_ShapeLists.isEmpty())
+				{
+					System.out.printf("\n\tList is Empty!");
+					return false;
+				}
+			printShapes();
+			break;
+		case 'C':
+			if(s_ShapeLists.isEmpty())
+			{
+				System.out.printf("\n\tList is Empty!");
+				return false;
+			}
+			printLargest();
+			break;
+		case 'D':
+			if(s_ShapeLists.isEmpty())
+			{
+				System.out.printf("\n\tList is Empty!");
+				return false;
+			}
+			printSmallest();
+			break;
+		case 'E':
+			if(s_ShapeLists.isEmpty())
+			{
+				System.out.printf("\n\tList is Empty!");
+				return false;
+			}
+			printAverages();
+			break;
+		case 'X':
+			return true;
+		default:
+			System.out.printf("\n\tERROR: %c is an invalid choice!", p_Choice);
 		}
+		
+		awaitUserInput();
+		
+		clearScreen();
+		
+		return false;
 	}
 	
-	public static void printShape(float[] p_ShapeParams, byte p_Index)
+	public static void printMenu()
 	{
-		switch(p_Index)
+		 System.out.print("\t                               &&&&&&&&&&&&#####                                 \r\n"
+						+ "\t                        &eeeoooooooooeeeeee&&&&&#######                          \r\n"
+						+ "\t                    eooo*************oooooeeee&&&&&########                      \r\n"
+						+ "\t                 eo**!!!!!!!!!!!!!!!*****ooooeeee&&&&#########                   \r\n"
+						+ "\t              eo*!!!:::::...:::::::!!!!****oooeeee&&&&&##########                \r\n"
+						+ "\t            o**!:::..............::::!!!!***ooooeee&&&&&###########              \r\n"
+						+ "\t          o*!!::...................::::!!!***ooooeee&&&&&############            \r\n"
+						+ "\t        eo*!::......................::::!!!***oooeeee&&&&&#############          \r\n"
+						+ "\t       o*!::.........................:::!!!***ooooeee&&&&&##############         \r\n"
+						+ "\t     &o*!::..........................:::!!!***ooooeeee&&&&###############%       \r\n"
+						+ "\t    eo*!::...........................:::!!!***ooooeeee&&&&&###############%      \r\n"
+						+ "\t   eo*!::............................:::!!!***ooooeeee&&&&&###############%%     \r\n"
+						+ "\t  &o*!!::...........................:::!!!!***oooeeee&&&&&#################%%    \r\n"
+						+ "\t  eo*!!:...........................::::!!!***ooooeeee&&&&&#################%%    \r\n"
+						+ "\t eo**!!::.........................::::!!!****oooeeee&&&&&&#################%%%   \r\n"
+						+ "\t eo**!!::.......................::::!!!!****oooeeeee&&&&&##################%%%   \r\n"
+						+ "\t&eo**!!:::....................:::::!!!!***ooooeeeee&&&&&&##################%%%%  \r\n"
+						+ "\t&eoo**!!::::................:::::!!!!****ooooeeeee&&&&&&###################%%%%  \r\n"
+						+ "\t&eoo***!!!:::::........:::::::!!!!!****oooooeeeee&&&&&&###################%%%%%  \r\n"
+						+ "\t&eeoo***!!!!:::::::::::::::!!!!!!*****ooooeeeee&&&&&&&####################%%%%%  \r\n"
+						+ "\t&&eeoo****!!!!!!!!!!!!!!!!!!!!*****oooooeeeeee&&&&&&######################%%%%%  \r\n"
+						+ "\t&&eeeooo******!!!!!!!!!!!*******ooooooeeeeee&&&&&&&######################%%%%%%  \r\n"
+						+ "\t#&&eeeooooo******************oooooooeeeeee&&&&&&&#######################%%%%%%%  \r\n"
+						+ "\t##&&&eeeeoooooooooo*ooooooooooooeeeeeeee&&&&&&&&#######################%%%%%%%%  \r\n"
+						+ "\t ##&&&eeeeeeooooooooooooooooeeeeeeeee&&&&&&&&&########################%%%%%%%%   \r\n"
+						+ "\t ###&&&&&eeeeeeeeeeeeeeeeeeeeeeee&&&&&&&&&&##########################%%%%%%%%%   \r\n"
+						+ "\t  ####&&&&&&&eeeeeeeeeeeeeee&&&&&&&&&&&&############################%%%%%%%%%    \r\n"
+						+ "\t  ######&&&&&&&&&&&&&&&&&&&&&&&&&&&&&##############################%%%%%%%%%%    \r\n"
+						+ "\t   ########&&&&&&&&&&&&&&&&&&&&&&################################%%%%%%%%%%%     \r\n"
+						+ "\t    ###############&&&&&#######################################%%%%%%%%%%%%      \r\n"
+						+ "\t     #########################################################%%%%%%%%%%%%       \r\n"
+						+ "\t       #####################################################%%%%%%%%%%%%         \r\n"
+						+ "\t        #################################################%%%%%%%%%%%%%%          \r\n"
+						+ "\t          #############################################%%%%%%%%%%%%%%            \r\n"
+						+ "\t            ########################################%%%%%%%%%%%%%%%              \r\n"
+						+ "\t              ##################################%%%%%%%%%%%%%%%%%                \r\n"
+						+ "\t                 %##########################%%%%%%%%%%%%%%%%%%                   \r\n"
+						+ "\t                   %%%%############%%%%%%%%%%%%%%%%%%%%%%%                      \r\n"
+						+ "\t                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                          \r\n"
+						+ "\t                               %%%%%%%%%%%%%%%%%                                 \r\n");
+		System.out.printf("\n"
+						+ "        CMPR112: Exam#2 ArrayLists of 3D Shapes Calculator By Landon Mendoza & Anthony Navarro (4/15/2025)\r\n"
+						+ "        ==================================================================================================\r\n"
+						+ "        In geometry, \"3D geometry\" refers to the study of shapes with three dimensions\r\n"
+						+ "        (length, width, and height), like a cube or sphere, while \"2D geometry\" deals\r\n"
+						+ "        with shapes that only have two dimensions (length and width), like a circle or\r\n"
+						+ "        square; essentially, 2D shapes are flat, while 3D shapes have volume and depth.\r\n"
+						+ "        ==================================================================================================\r\n"
+						+ "\r\n"
+						+ "        A. Read data file and store into Array Lists of 3D Objects\r\n"
+						+ "        B. Display sorted Array Lists of 3D Objects\r\n"
+						+ "        C. Find the Largest 3D Object from ALL Array Lists\r\n"
+						+ "        D. Find the Smallest 3D Object from ALL Array Lists\r\n"
+						+ "        E. Find the Average 3D Object of EACH Array List\r\n"
+						+ "        X. Exit\r\n"
+						+ "\r\n"
+						+ "        Option: ");
+	}
+	
+	public static void printAverages()
+	{
+		for (byte i = 0; i < 10; i++) {
+			System.out.printf("\n\n\tAveraged %s", shapeIndexToName(i));
+			System.out.printf("\n\t==================================================================================================");
+			printAverage(i);
+		}
+				
+	}
+	
+	public static void printAverage(byte p_ShapeIndex)
+	{
+		byte numOfShapes = (byte) s_ShapeLists.get(p_ShapeIndex).size();
+		
+		if(numOfShapes < 1) return;
+		
+		float[] averageShape = numOfShapes > 0 ? s_ShapeLists.get(p_ShapeIndex).get(0) : null;
+		
+		for(byte j = 1; j < numOfShapes; j++)
 		{
+			if(p_ShapeIndex < 7)
+			{
+				averageShape[0] += s_ShapeLists.get(p_ShapeIndex).get(j)[0];
+			}
+			else
+			{
+				averageShape[0] += s_ShapeLists.get(p_ShapeIndex).get(j)[0];
+				averageShape[1] += s_ShapeLists.get(p_ShapeIndex).get(j)[1];
+			}
+		}
+		
+		if(p_ShapeIndex < 7)
+		{
+			averageShape[0] /= numOfShapes;
+		}
+		else
+		{
+			averageShape[0] /= numOfShapes;
+			averageShape[1] /= numOfShapes;
+		}
+		
+		printShape(averageShape, p_ShapeIndex);
+	}
+	
+	public static void printLargest()
+	{
+		float largestVolume = Float.MIN_VALUE;
+		byte shapeIndex = -1;
+		byte listIndex = -1;
+		
+		for(byte i = 0; i < 10; i++)
+		{
+			byte count = 0;
+			for(float[] shape : s_ShapeLists.get(i))
+				{
+					if(getShapeVolume(shape, i) > largestVolume) 
+						{
+							largestVolume = getShapeVolume(shape, i);
+							shapeIndex = i;
+							listIndex = count;
+						}
+					count++;
+				}
+		}
+		
+		System.out.printf("\n\tThe Largest shape is a %s at index %d with a volume of %.2f\n\tShape Info:", 
+				shapeIndexToName(shapeIndex), listIndex, largestVolume);
+		printShape(s_ShapeLists.get(shapeIndex).get(listIndex), shapeIndex);
+	}
+	
+	public static void printSmallest()
+	{
+		float smallestVolume = Float.MAX_VALUE;
+		byte shapeIndex = -1;
+		byte listIndex = -1;
+		
+		for(byte i = 0; i < 10; i++)
+		{
+			byte count = 0;
+			for(float[] shape : s_ShapeLists.get(i))
+				{		
+					if(getShapeVolume(shape, i) < smallestVolume) 
+						{
+							smallestVolume = getShapeVolume(shape, i);
+							shapeIndex = i;
+							listIndex = count;
+						}
+					count++;
+				}
+		}
+		
+		System.out.printf("\n\tThe Smallest shape is a %s at index %d with a volume of %.2f\n\tShape Info:", 
+				shapeIndexToName(shapeIndex), listIndex, smallestVolume);
+		printShape(s_ShapeLists.get(shapeIndex).get(listIndex), shapeIndex);
+		
+	}
+	
+	public static char toUpperFirstChar(String p_Input)
+	{
+		return p_Input.toUpperCase().charAt(0);
+	}
+
+	public static void printShapes() 
+	{
+		for (byte i = 0; i < 10; i++) {
+			System.out.printf("\n\n\t%s", shapeIndexToName(i));
+			System.out.printf("\n\t==================================================================================================");
+			for (final float[] shape : s_ShapeLists.get(i))
+				{
+					printShape(shape, i);
+				}
+		}
+	}
+
+	public static void printShape(final float[] p_ShapeParams, byte p_Index) {
+		switch (p_Index) {
 		case 0:
 			printSphere(p_ShapeParams);
 			break;
@@ -63,106 +292,140 @@ public class Exam2
 			System.out.println("ERROR: Invalid shape index");
 		}
 	}
+	
+	public static float getShapeVolume(final float[] p_ShapeParams, byte p_Index)
+	{
+		switch(p_Index)
+		{
+		case 0:
+			return Volumes.getSphereVolume(p_ShapeParams[0]);
+		case 1:
+			return Volumes.getHemisphereVolume(p_ShapeParams[0]);
+		case 2:
+			return Volumes.getTetrahedronVolume(p_ShapeParams[0]);
+		case 3:
+			return Volumes.getHexahedronVolume(p_ShapeParams[0]);
+		case 4:
+			return Volumes.getOctahedronVolume(p_ShapeParams[0]);
+		case 5:
+			return Volumes.getDodecahedronVolume(p_ShapeParams[0]);
+		case 6:
+			return Volumes.getIcosahedronVolume(p_ShapeParams[0]);
+		case 7:
+			return Volumes.getConeVolume(p_ShapeParams[0], p_ShapeParams[1]);
+		case 8:
+			return Volumes.getTorusVolume(p_ShapeParams[0], p_ShapeParams[1]);
+		case 9:
+			return Volumes.getCylinderVolume(p_ShapeParams[0], p_ShapeParams[1]);
+		default:
+			return 0.f;
+		}
+	}
 
-	public static void printSphere(float[] p_Radius)
-	{
-		System.out.printf("Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Radius[0]);
-	}
-	
-	public static void printHemisphere(float[] p_Radius)
-	{
-		System.out.printf("Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Radius[0]);
+	public static void printSphere(final float[] p_Radius) {
+		System.out.printf("\n\tRadius: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Radius[0],
+				SurfaceAreas.getSphereSurfaceArea(p_Radius[0]), Volumes.getSphereVolume(p_Radius[0]));
 	}
 
-	public static void printTetrahedron(float[] p_EdgeLength)
-	{
-		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0]);
+	public static void printHemisphere(final float[] p_Radius) {
+		System.out.printf("\n\tRadius: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Radius[0],
+				SurfaceAreas.getHemisphereSurfaceArea(p_Radius[0]), Volumes.getHemisphereVolume(p_Radius[0]));
 	}
-	
-	//cube
-	public static void printHexahedron(float[] p_EdgeLength)
-	{
-		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0]);
+
+	public static void printTetrahedron(final float[] p_EdgeLength) {
+		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0],
+				SurfaceAreas.getTetrahedronSurfaceArea(p_EdgeLength[0]), Volumes.getTetrahedronVolume(p_EdgeLength[0]));
 	}
-	
-	public static void printOctahedron(float[] p_EdgeLength)
-	{
-		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0]);
+
+	// cube
+	public static void printHexahedron(final float[] p_EdgeLength) {
+		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0],
+				SurfaceAreas.getHexahedronSurfaceArea(p_EdgeLength[0]), Volumes.getHexahedronVolume(p_EdgeLength[0]));
 	}
-	
-	public static void printDodecahedron(float[] p_EdgeLength)
-	{
-		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0]);
+
+	public static void printOctahedron(final float[] p_EdgeLength) {
+		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0],
+				SurfaceAreas.getOctahedronSurfaceArea(p_EdgeLength[0]), Volumes.getOctahedronVolume(p_EdgeLength[0]));
 	}
-	
-	public static void printIcosahedron(float[] p_EdgeLength)
-	{
-		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0]);
+
+	public static void printDodecahedron(final float[] p_EdgeLength) {
+		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0],
+				SurfaceAreas.getDodecahedronSurfaceArea(p_EdgeLength[0]),
+				Volumes.getDodecahedronVolume(p_EdgeLength[0]));
 	}
-	
-	public static void printCone(float[] p_Cone)
-	{
-		System.out.printf("\n\tBase Radius: %.2f \tHeight: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Cone[0], p_Cone[1]);
+
+	public static void printIcosahedron(final float[] p_EdgeLength) {
+		System.out.printf("\n\tEdge Length: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_EdgeLength[0],
+				SurfaceAreas.getIcosahedronSurfaceArea(p_EdgeLength[0]), Volumes.getIcosahedronVolume(p_EdgeLength[0]));
 	}
-	
-	public static void printTorus(float[] p_Torus)
-	{	
-		System.out.printf("\n\tMajor Radius: %.2f \tMinor Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Torus[0], p_Torus[1]);
+
+	public static void printCone(final float[] p_Cone) {
+		System.out.printf("\n\tBase Radius: %.2f \tHeight: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Cone[0],
+				p_Cone[1], SurfaceAreas.getConeSurfaceArea(p_Cone[0], p_Cone[1]),
+				Volumes.getConeVolume(p_Cone[0], p_Cone[1]));
 	}
-	
-	public static void printCylinder(float[] p_Cylinders)
-	{
-		System.out.printf("\n\tBase Radius: %.2f \tHeight: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Cylinders[0], p_Cylinders[1]);
+
+	public static void printTorus(final float[] p_Torus) {
+		System.out.printf("\n\tMajor Radius: %.2f \tMinor Radius: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Torus[0],
+				p_Torus[1], SurfaceAreas.getTorusSurfaceArea(p_Torus[0], p_Torus[1]),
+				Volumes.getTorusVolume(p_Torus[0], p_Torus[1]));
 	}
-	
-	public static void initializeFromFile( ArrayList<ArrayList<float[]>> p_ShapeLists) throws IOException
-	{
-		p_ShapeLists.clear();
-		p_ShapeLists = new ArrayList<ArrayList<float[]>>(10);
+
+	public static void printCylinder(final float[] p_Cylinders) {
+		System.out.printf("\n\tBase Radius: %.2f \tHeight: %.2f \tSurface Area: %.2f \tVolume: %.2f", p_Cylinders[0],
+				p_Cylinders[1], SurfaceAreas.getCylinderSurfaceArea(p_Cylinders[0], p_Cylinders[1]),
+				Volumes.getCylinderVolume(p_Cylinders[0], p_Cylinders[1]));
+	}
+
+	public static void initializeFromFile() throws IOException {
+		s_ShapeLists = new ArrayList<ArrayList<float[]>>();
+		
+		for(int i = 0; i < 10; i++)
+			s_ShapeLists.add(new ArrayList<float[]>());
+		
 		File file;
 		Scanner fileScanner;
 		String fileName;
-		
+
 		do 
 		{
 			fileName = Input.getString("\n\tInput file name to read shapes from:");
 			file = new File(fileName);
-			
-			if(!file.exists())
+
+			if (!file.exists())
 				System.out.println("\n\tERROR: INVALID FILE");
-		} while(!file.exists());
-		
+
+		} while (!file.exists());
+
 		fileScanner = new Scanner(file);
-		
-		while(fileScanner.hasNext())
-		{
+
+		while (fileScanner.hasNext()) {
+			
 			String[] tokens = fileScanner.nextLine().split(",");
-			
+
 			float[] tempArr = null;
-			
-			if(shapeNameToIndex(tokens[0]) == -1)
-				{
-					System.out.println("ERROR: Invalid shape detected");
-					continue;
-				}
-			
-			if(tokens.length == 2)
+			  
+			if(shapeNameToIndex(tokens[0]) == -1) 
+			{
+				System.out.println("ERROR: Invalid shape detected"); 
+				continue; 
+			}
+			  
+			if(tokens.length == 2) 
 				tempArr = new float[] {Float.parseFloat(tokens[1])};
-			else if(tokens.length == 3)
+			else if(tokens.length == 3) 
 				tempArr = new float[] {Float.parseFloat(tokens[1]), Float.parseFloat(tokens[2])};
+			  
+			s_ShapeLists.get(shapeNameToIndex(tokens[0])).add(tempArr);
 			
-			p_ShapeLists.get(shapeNameToIndex(tokens[0])).add(tempArr);
-			
+			 
 		}
-		p_ShapeLists.add(null);
-		
+
 		fileScanner.close();
 	}
-	
-	public static byte shapeNameToIndex(String p_ShapeName)
-	{
-		switch(p_ShapeName.toLowerCase())
-		{
+
+	public static byte shapeNameToIndex(final String p_ShapeName) {
+		switch (p_ShapeName.toLowerCase()) {
 		case "sphere":
 			return 0;
 		case "hemisphere":
@@ -187,11 +450,9 @@ public class Exam2
 			return -1;
 		}
 	}
-	
-	public static String shapeIndexToName(byte p_Index)
-	{
-		switch(p_Index)
-		{
+
+	public static String shapeIndexToName(byte p_Index) {
+		switch (p_Index) {
 		case 0:
 			return "sphere";
 		case 1:
@@ -217,4 +478,19 @@ public class Exam2
 		}
 	}
 	
+	public static void clearScreen()
+	{
+		System.out.printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		System.out.flush();
+	}
+	
+	public static void awaitUserInput()
+	{
+		Scanner buffer = new Scanner(System.in);
+		
+		System.out.printf("\n\n\tPress ENTER to continue ");
+		
+		buffer.nextLine();
+	}
+
 }

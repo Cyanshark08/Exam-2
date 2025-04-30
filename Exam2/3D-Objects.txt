@@ -1,0 +1,13 @@
+Sphere,1.2
+Hemisphere,1.3
+Tetrahedron,1.4
+Hexahedron,1.5
+Octahedron,1.6
+Dodecahedron,1.7
+Icosahedron,1.8
+Cone,1.9,1.8
+Torus,1.10,1.05
+Torus,1.09,1.04
+Cone,1.11,1.12
+Cylinder,1.12,1.11
+Tetrahedron,4.3
